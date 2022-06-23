@@ -58,4 +58,10 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    //Relacion 1 a 1
+    public function people()
+    {
+        return $this->hasOne(Person::class);
+    }
 }
