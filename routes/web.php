@@ -18,6 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+<<<<<<< HEAD
 Route::get('/prueba', Prueba::class);
 
 
@@ -31,3 +32,5 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+=======
+>>>>>>> origin/MEC-2-register-users

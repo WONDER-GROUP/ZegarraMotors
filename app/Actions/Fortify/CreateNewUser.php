@@ -22,12 +22,14 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input)
     {
+        
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'username' => ['required', 'string', 'max:255'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
+<<<<<<< HEAD
 
         return DB::transaction(function () use ($input) {
             return tap(User::create([
@@ -53,5 +55,13 @@ class CreateNewUser implements CreatesNewUsers
             'name' => explode(' ', $user->name, 2)[0]."'s Team",
             'personal_team' => true,
         ]));
+=======
+        // dd($input);
+        return User::create([
+            'username' => $input['username'],
+            // 'email' => $input['email'],
+            'password' => Hash::make($input['password']),
+        ]);
+>>>>>>> origin/MEC-2-register-users
     }
 }

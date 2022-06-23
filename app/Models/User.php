@@ -26,7 +26,13 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
+<<<<<<< HEAD
         'name', 'email', 'password',
+=======
+        'username',
+        'email',
+        'password',
+>>>>>>> origin/MEC-2-register-users
     ];
 
     /**
@@ -58,4 +64,10 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    //Relacion 1 a 1
+    public function people()
+    {
+        return $this->hasOne(Person::class);
+    }
 }
