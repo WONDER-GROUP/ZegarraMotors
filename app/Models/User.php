@@ -26,13 +26,9 @@ class User extends Authenticatable
      * @var string[]
      */
     protected $fillable = [
-<<<<<<< HEAD
-        'name', 'email', 'password',
-=======
         'username',
         'email',
         'password',
->>>>>>> origin/MEC-2-register-users
     ];
 
     /**
