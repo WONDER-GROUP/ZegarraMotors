@@ -29,5 +29,12 @@ class UserSeeder extends Seeder
             'cellphone' => '72367995',
             'address' => 'H vasquez 186',
         ]);
+
+        $user = User::all()->last();
+
+        $user->switchTeam($team = $user->ownedTeams()->create([
+            'name' => 'Administrador',
+            'personal_team' => false,
+        ]));
     }
 }
