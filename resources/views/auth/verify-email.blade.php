@@ -5,7 +5,8 @@
         </x-slot>
 
         <div class="mb-4 text-sm text-gray-600">
-            {{ __('Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+            Su cuenta se encuentra inhabilitada, por favor comuniquese con un administrador.
+            {{-- {{ __('Before continuing, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }} --}}
         </div>
 
         @if (session('status') == 'verification-link-sent')
@@ -14,7 +15,7 @@
             </div>
         @endif
 
-        <div class="mt-4 flex items-center justify-between">
+        {{-- <div class="mt-4 flex items-center justify-between">
             <form method="POST" action="{{ route('verification.send') }}">
                 @csrf
 
@@ -40,6 +41,6 @@
                     </button>
                 </form>
             </div>
-        </div>
+        </div> --}}
     </x-jet-authentication-card>
 </x-guest-layout>

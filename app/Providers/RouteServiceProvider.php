@@ -38,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
                     require base_path('routes/web.php');
                 });
 
-            Route::middleware('web', 'auth')
+            Route::middleware('web', 'auth', 'verified')
                 ->prefix('admin')
                 ->group(function () {
                     require base_path('routes/admin.php');
