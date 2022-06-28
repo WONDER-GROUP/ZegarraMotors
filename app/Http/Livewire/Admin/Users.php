@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Admin;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -8,14 +8,30 @@ use Livewire\Component;
 
 class Users extends Component
 {
-    public $users, $username, $name, $f_last_name, $m_last_name, $nit, $cellphone, $address;
+    protected $listeners = ['delete', 'updateSearch', 'clear'];
+    public $users, $username, $name, $password, $f_last_name, $m_last_name, $nit, $cellphone, $address;
     public $modal = 0;
     public $user_id;
+
     public function render()
     {
         $this->users = User::all();
         return view('livewire.users');
     }
+
+    /* public function updated($propertyName)
+    {
+        $this->validateOnly($propertyName, [
+            'username' => 'min:4|max:20|unique:users,username',
+            'name' => 'min:3|max:20',
+            'f_last_name' => 'min:3|max:15',
+            'm_last_name' => 'min:3|max:15',
+            'nit' => 'digits_between:6,12',
+            'cellphone' => 'digits:8',
+            'address' => 'min:5|max:40',
+        ]);
+    } */
+
 
     public function create(){
         $this->clear();
@@ -31,6 +47,7 @@ class Users extends Component
 
     public function closeModal(){
         $this->modal = 0;
+        $this->clear();
     }
 
     public function clear(){
@@ -41,9 +58,19 @@ class Users extends Component
         $this->nit = '';
         $this->cellphone = '';
         $this->address = '';
+        $this->resetErrorBag();
     }
 
     public function store(){
+        $validatedData = $this->validate([
+            'username' => 'required|min:4|max:20|unique:users,username',
+            'name' => 'required|min:3|max:20',
+            'f_last_name' => 'required|min:3|max:15',
+            'm_last_name' => 'required|min:3|max:15',
+            'nit' => 'required|digits_between:6,12',
+            'cellphone' => 'required|digits:8',
+            'address' => 'required|min:5|max:40',
+        ]);
         $user = User::create([
             'username' => $this->username,
             'password' => Hash::make($this->nit),
@@ -57,6 +84,7 @@ class Users extends Component
             'address' => $this->address,
         ]);
         $this->closeModal();
+        session()->flash('message', 'Usuario Creado Correctamente');
     }
 
     public function edit($id){
@@ -74,6 +102,15 @@ class Users extends Component
     }
 
     public function update(){
+        $validatedData = $this->validate([
+            'password' => 'max:30',
+            'name' => 'required|min:3|max:20',
+            'f_last_name' => 'required|min:3|max:15',
+            'm_last_name' => 'required|min:3|max:15',
+            'nit' => 'required|digits_between:6,12',
+            'cellphone' => 'required|digits:8',
+            'address' => 'required|min:5|max:40',
+        ]);
         $user = User::findOrFail($this->user_id);
         $user->update([
             'username' => $this->username,
@@ -92,12 +129,13 @@ class Users extends Component
             'address' => $this->address,
         ]);
         $this->closeModal();
+        session()->flash('message', 'Usuario Actualizado Correctamente');
     }
 
     public function delete($id){
         User::find($id)->delete();
+        session()->flash('message', 'Usuario Eliminado Correctamente');
     }
 }
-
 
 
