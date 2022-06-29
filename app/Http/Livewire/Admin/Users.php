@@ -3,13 +3,13 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Illuminate\Support\Facades\Hash;
 
 class Users extends Component
 {
     protected $listeners = ['delete', 'updateSearch', 'clear'];
-    public $users, $username, $name, $password, $f_last_name, $m_last_name, $nit, $cellphone, $address;
+    public $users, $username, $name, $password, $f_last_name, $m_last_name, $nit, $cellphone, $address, $role;
     public $modal = 0;
     public $user_id;
 
@@ -64,6 +64,7 @@ class Users extends Component
         $this->cellphone = '';
         $this->address = '';
         $this->resetErrorBag();
+        $this->reset('role');
     }
 
     public function store()
@@ -76,11 +77,13 @@ class Users extends Component
             'nit' => 'required|digits_between:6,12|unique:people,nit',
             'cellphone' => 'required|digits:8',
             'address' => 'required|min:5|max:40',
+            'role' => 'required',
         ]);
         $user = User::create([
             'username' => $this->username,
             'password' => Hash::make($this->nit),
-        ]);
+        ])->assignRole($this->role);
+
         $user->people()->create([
             'name' => $this->name,
             'f_last_name' => $this->f_last_name,
@@ -89,8 +92,10 @@ class Users extends Component
             'cellphone' => $this->cellphone,
             'address' => $this->address,
         ]);
+
         $this->closeModal();
-        session()->flash('message', 'Usuario Creado Correctamente');
+        $this->emit('save');
+        // session()->flash('message', 'Usuario Creado Correctamente');
     }
 
     public function edit($id)
@@ -104,6 +109,7 @@ class Users extends Component
         $this->cellphone = $user->people->cellphone;
         $this->address = $user->people->address;
         $this->user_id = $id;
+        $this->role = $user->getRoleNames()->first();
         $this->openModalUpdate();
     }
 
@@ -120,6 +126,7 @@ class Users extends Component
                 'nit' => 'required|digits_between:6,12|exists:people,nit',
                 'cellphone' => 'required|digits:8',
                 'address' => 'required|min:5|max:40',
+                'role' => 'required',
             ]);
             $user->update([
                 'username' => $this->username,
@@ -137,8 +144,7 @@ class Users extends Component
                 'cellphone' => $this->cellphone,
                 'address' => $this->address,
             ]);
-            $this->closeModal();
-            session()->flash('message', 'Usuario Actualizado Correctamente');
+
         } else {
             $this->validate([
                 'password' => 'max:30',
@@ -148,6 +154,7 @@ class Users extends Component
                 'nit' => 'required|digits_between:6,12|unique:people,nit',
                 'cellphone' => 'required|digits:8',
                 'address' => 'required|min:5|max:40',
+                'role' => 'required',
             ]);
             $user->update([
                 'username' => $this->username,
@@ -165,9 +172,18 @@ class Users extends Component
                 'cellphone' => $this->cellphone,
                 'address' => $this->address,
             ]);
-            $this->closeModal();
-            session()->flash('message', 'Usuario Actualizado Correctamente');
         }
+
+        // check if role user has changed
+        if ($user->getRoleNames()->first() !== $this->role) {
+            $user->removeRole($user->getRoleNames()->first());
+            $user->assignRole($this->role);
+        }
+
+        $this->closeModal();
+        $this->emit('save');
+        // session()->flash('message', 'Usuario Actualizado Correctamente');
+
     }
 
     /**

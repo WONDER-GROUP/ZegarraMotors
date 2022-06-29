@@ -1,6 +1,9 @@
-<div class="modal h-screen w-full fixed left-0 top-0 flex justify-center items-center bg-black bg-opacity-50">
+@php
+use Spatie\Permission\Models\Role;
+@endphp
+<div x-data class="modal h-screen w-full fixed -left-4 top-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
     <!-- modal -->
-    <div class="bg-white rounded shadow-lg w-10/12 md:w-1/3">
+    <div @click.away="$wire.set('modal', 0)" class="bg-white rounded shadow-lg w-10/12 md:w-1/3">
         <!-- modal header -->
         <div class="border-b px-4 py-2 flex justify-between items-center">
             <h3 class="font-semibold text-lg">Registrar Nuevo Usuario</h3>
@@ -79,6 +82,17 @@
                         <span class="error">{{ $message }}</span>
                     @enderror
                 </label>
+                <label class="relative block p-1 border-2 border-gray-200 rounded-lg my-1" for="address">
+                  Seleccionar Rol
+                </label>
+                <div class="w-full p-1 text-sm">
+                    <select wire:model='role' size="3" class="w-full">
+                        @foreach (Role::all()->pluck('name') as $role)
+                            <option value="{{ $role }}">{{ $role }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <x-jet-input-error for="role" />
                 <div class="flex justify-end items-center w-100 border-t p-1">
                     <button wire:click="closeModal()"
                         class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white mr-3 close-modal">Cancelar</button>
