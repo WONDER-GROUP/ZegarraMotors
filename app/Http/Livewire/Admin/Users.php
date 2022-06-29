@@ -95,7 +95,6 @@ class Users extends Component
 
         $this->closeModal();
         $this->emit('save');
-        // session()->flash('message', 'Usuario Creado Correctamente');
     }
 
     public function edit($id)
