@@ -26,7 +26,7 @@
                 </div>
                 <div>
                     <x-jet-label for="nit" value="C.i./NIT" />
-                    <x-jet-input wire:model="customer.nit" id="nit" class="block mt-1 w-full" type="text" name="nit"
+                    <x-jet-input wire:model="customer.nit" id="nit" class="block mt-1 w-full" type="text" name="number"
                         placeholder="Ej. 96584523" required autofocus />
                 </div>
 
@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <x-jet-label for="address" value="Dirección" />
-                    <x-jet-input wire:model="customer.address" id="address" class="block mt-1 w-full" type="text" name="nit"
+                    <x-jet-input wire:model="customer.address" id="address" class="block mt-1 w-full" type="text" name="address1"
                         placeholder="Ej. Calle xx" required autofocus />
                 </div>
             </div>
