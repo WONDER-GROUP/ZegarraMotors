@@ -10,34 +10,34 @@
             <div class="grid grid-cols-2 gap-6">
                 <div>
                     <x-jet-label for="name" value="Nombre" />
-                    <x-jet-input wire:model="customer.name" id="name" class="block mt-1 w-full" type="text" name="name"
+                    <x-jet-input wire:model="customer.name" id="name" class="block w-full mt-1" type="text" name="name"
                         placeholder="Ej. Juan" required autofocus />
                 </div>
                 <div>
                     <x-jet-label for="f_last_name" value="Apellido paterno" />
-                    <x-jet-input wire:model="customer.f_last_name" id="f_last_name" class="block mt-1 w-full" type="text" name="lname"
+                    <x-jet-input wire:model="customer.f_last_name" id="f_last_name" class="block w-full mt-1" type="text" name="lname"
                         placeholder="Ej. Perez" required autofocus />
                 </div>
 
                 <div>
                     <x-jet-label for="m_last_name" value="Apellido materno" />
-                    <x-jet-input wire:model="customer.m_last_name" id="m_last_name" class="block mt-1 w-full" type="text" name="lname"
+                    <x-jet-input wire:model="customer.m_last_name" id="m_last_name" class="block w-full mt-1" type="text" name="lname"
                         placeholder="Ej. Muñoz" required autofocus />
                 </div>
                 <div>
-                    <x-jet-label for="nit" value="C.i./NIT" />
-                    <x-jet-input wire:model="customer.nit" id="nit" class="block mt-1 w-full" type="text" name="number"
+                    <x-jet-label for="nit" value="C.I./NIT" />
+                    <x-jet-input wire:model="customer.nit" id="nit" class="block w-full mt-1" type="text" name="number"
                         placeholder="Ej. 96584523" required autofocus />
                 </div>
 
                 <div>
                     <x-jet-label for="cellphone" value="Teléfono" />
-                    <x-jet-input wire:model="customer.cellphone" id="cellphone" class="block mt-1 w-full" type="text" name="cellphone"
+                    <x-jet-input wire:model="customer.cellphone" id="cellphone" class="block w-full mt-1" type="text" name="cellphone"
                         placeholder="Ej. 74859621" required autofocus />
                 </div>
                 <div>
                     <x-jet-label for="address" value="Dirección" />
-                    <x-jet-input wire:model="customer.address" id="address" class="block mt-1 w-full" type="text" name="address1"
+                    <x-jet-input wire:model="customer.address" id="address" class="block w-full mt-1" type="text" name="address1"
                         placeholder="Ej. Calle xx" required autofocus />
                 </div>
             </div>

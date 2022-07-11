@@ -72,25 +72,50 @@
                                             </svg>
                                         </button>
 
-                                        <button wire:click="editProduct({{ $product->id }})"
+                                        <button wire:click="$emit('openModalInventory', {{ $product->id }})"
                                             class="z-20 block p-4 transition-all bg-green-200 border-2 border-white rounded-full text-dark-700 active:bg-blue-50 hover:scale-110 focus:outline-none focus:ring"
                                             type="button">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                             </svg>
                                         </button>
 
-                                        <button wire:click="deleteProduct({{ $product->id }})"
-                                            class="z-30 block p-4 transition-all bg-red-200 border-2 border-white rounded-full text-dark-700 hover:scale-110 focus:outline-none focus:ring active:bg-red-50"
-                                            type="button">
-                                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
+                                        @if ($product->inventories->count())
+                                            <b class="z-30 block p-4 transition-all bg-gray-200 border-2 border-white rounded-full text-dark-700 hover:scale-110 focus:outline-none focus:ring active:bg-gray-50"
+                                                type="button">
+                                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </b>
+
+                                            <button wire:click="showInvestories({{ $product->id }})"
+                                                class="z-30 block p-4 transition-all bg-blue-700 border-2 border-white rounded-full text-dark-700 hover:scale-110 focus:outline-none focus:ring active:bg-blue-70"
+                                                type="button">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            </button>
+                                        @else
+                                            <button wire:click="deleteProduct({{ $product->id }})"
+                                                class="z-30 block p-4 transition-all bg-red-200 border-2 border-white rounded-full text-dark-700 hover:scale-110 focus:outline-none focus:ring active:bg-red-50"
+                                                type="button">
+                                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -115,7 +140,7 @@
 
             <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <x-jet-label for="product" value="Nombre" />
+                    <x-jet-label for="product" value="Producto" />
                     <x-jet-input wire:model="product.name" id="name" class="block w-full mt-1" type="text"
                         name="product" placeholder="Ej. Aceite para motor" required autofocus />
                 </div>
@@ -149,7 +174,7 @@
     {{-- modal for edit --}}
     <x-jet-dialog-modal wire:model="product.editProduct" mt='mt-24'>
         <x-slot name="title">
-            Actualizar cliente {{ $presentationId }}
+            Actualizar cliente
         </x-slot>
 
         <x-slot name="content">
@@ -157,7 +182,7 @@
 
             <div class="grid grid-cols-2 gap-6">
                 <div>
-                    <x-jet-label for="product" value="Nombre" />
+                    <x-jet-label for="product" value="Producto" />
                     <x-jet-input wire:model="product.name" id="product" class="block w-full mt-1" type="text"
                         name="product" placeholder="Ej. Aceite para motor" required autofocus />
                 </div>
@@ -186,4 +211,6 @@
             </x-jet-button>
         </x-slot>
     </x-jet-dialog-modal>
+
+    @livewire('admin.add-inventory')
 </div>

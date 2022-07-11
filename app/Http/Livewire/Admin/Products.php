@@ -34,6 +34,8 @@ class Products extends Component
         'presentation.name' => '',
     ];
 
+    protected $listeners = ['saveInventory'];
+
     public function mount()
     {
         $this->getPresentations();
@@ -156,6 +158,17 @@ class Products extends Component
     {
         $this->reset('product', 'productId', 'name');
         $this->resetValidation();
+    }
+
+    public function saveInventory()
+    {
+        $this->render();
+        $this->emit('success');
+    }
+
+    public function showInvestories($productId)
+    {
+        redirect(route('admin.showInventories', $productId));
     }
 
     public function render()

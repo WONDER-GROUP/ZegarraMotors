@@ -16,13 +16,16 @@
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
-                        {{ __('Users') }}
+                        Usuarios
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('admin.customers') }}" :active="request()->routeIs('admin.customers')">
                         Clientes
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('admin.products') }}" :active="request()->routeIs('admin.products')">
                         Productos
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.inventories') }}" :active="request()->routeIs('admin.inventories')">
+                        Inventarios
                     </x-jet-nav-link>
                 </div>
             </div>
