@@ -106,7 +106,9 @@ class SalesCreate extends Component
         $order->customer_id = $this->customerId;
         $order->payment = $this->payment;
         $order->discount = $this->discount;
-        $order->total = $this->total;
+        $order->sub_total = $this->total;
+        $order->total = $this->total - $this->discount;
+        $order->change = round($this->payment - ($this->total - $this->discount ), 2);
         $order->ciSearch = $customer->nit;
         $order->save();
 

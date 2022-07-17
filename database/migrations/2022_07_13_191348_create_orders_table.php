@@ -21,7 +21,9 @@ return new class extends Migration
 
             $table->float('payment');
             $table->float('discount')->default(0);
-            $table->float('total')->nullable();
+            $table->float('sub_total');
+            $table->float('total');
+            $table->float('change');
             $table->enum('status', [Order::NULL, Order::ACTIVE])->default(Order::ACTIVE);
             $table->string('ciSearch')->nullable();
 

@@ -88,7 +88,7 @@ use App\Models\Invoice;
             <tr>
                 <td colspan="3"></td>
                 <td align="right">Subtotal</td>
-                <td align="right">{{ $order->total }}</td>
+                <td align="right">{{ $order->sub_total }}</td>
             </tr>
             <tr>
                 <td colspan="3"></td>
@@ -104,12 +104,12 @@ use App\Models\Invoice;
             <tr>
                 <td colspan="3"></td>
                 <td align="right">Cambio</td>
-                <td align="right">{{ $order->payment - ($order->total - $order->discount) }}</td>
+                <td align="right">{{ $order->change }}</td>
             </tr>
             <tr>
                 <td colspan="3"></td>
                 <td align="right">TOTAL</td>
-                <td align="right" class="gray">{{ $order->total - $order->discount }} Bs.</td>
+                <td align="right" class="gray">{{ $order->total}} Bs.</td>
             </tr>
         </tfoot>
     </table>

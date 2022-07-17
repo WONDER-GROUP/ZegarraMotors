@@ -31,7 +31,12 @@
                             </th>
                             <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    Pago
+                                    Total a pagar
+                                </div>
+                            </th>
+                            <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    Subtotal
                                 </div>
                             </th>
                             <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
@@ -42,6 +47,11 @@
                             <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
                                 <div class="flex items-center">
                                     Total
+                                </div>
+                            </th>
+                            <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    Cambio
                                 </div>
                             </th>
                             <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
@@ -68,10 +78,16 @@
                                     {{ $sale->payment }}
                                 </td>
                                 <td class="p-4 text-gray-700 whitespace-nowrap">
+                                    {{ $sale->sub_total }}
+                                </td>
+                                <td class="p-4 text-gray-700 whitespace-nowrap">
                                     {{ $sale->discount }}
                                 </td>
                                 <td class="p-4 text-gray-700 whitespace-nowrap">
-                                    {{ $sale->total }}
+                                    {{ $sale->total}}
+                                </td>
+                                <td class="p-4 text-gray-700 whitespace-nowrap">
+                                    {{ $sale->change}}
                                 </td>
                                 <td class="px-2 w-14">
                                     <div class="grid justify-center">
