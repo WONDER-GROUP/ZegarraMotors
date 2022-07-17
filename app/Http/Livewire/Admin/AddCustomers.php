@@ -47,6 +47,7 @@ class AddCustomers extends Component
 
         $this->resetVariables();
         $this->emitTo('admin.customers', 'saveCustomer');
+        $this->emitTo('admin.sales-create', 'saveCustomer', $customer->id);
     }
 
     public function resetVariables()

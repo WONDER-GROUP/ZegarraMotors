@@ -11,9 +11,11 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
+    @stack('styles')
+    
     <!-- Styles -->
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
     @livewireStyles
 
     <!-- Scripts -->
@@ -42,8 +44,8 @@
     </div>
 
     @stack('modals')
-
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>

@@ -27,6 +27,9 @@
                     <x-jet-nav-link href="{{ route('admin.inventories') }}" :active="request()->routeIs('admin.inventories')">
                         Inventarios
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.sales') }}" :active="request()->routeIs('admin.sales')">
+                        Ventas
+                    </x-jet-nav-link>
                 </div>
             </div>
 

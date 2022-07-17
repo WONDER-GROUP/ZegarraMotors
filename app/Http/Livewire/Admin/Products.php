@@ -15,6 +15,7 @@ class Products extends Component
         'name' => null,
         'stock' => null,
         'branch' => null,
+        'description' => null,
         'addProduct' => false,
         'editProduct' => false,
     ];
@@ -46,6 +47,7 @@ class Products extends Component
         $this->validate([
             'product.name' => 'required|max:25',
             'product.branch' => 'required',
+            'product.description' => 'required',
         ]);
 
         $presentation = Presentation::find($this->presentationId);
@@ -56,7 +58,7 @@ class Products extends Component
             $product->presentation_id = $presentation->id;
             $product->name = $this->product['name'];
             $product->branch = $this->product['branch'];
-            $product->stock = 0;
+            $product->description = $this->product['description'];
             $product->save();
         } else {
             if ($this->name) {
@@ -69,7 +71,7 @@ class Products extends Component
                 $product->presentation_id = $presentation->id;
                 $product->name = $this->product['name'];
                 $product->branch = $this->product['branch'];
-                $product->stock = 0;
+                $product->description = $this->product['description'];
                 $product->save();
             } else {
                 $product = new Product();
@@ -77,7 +79,7 @@ class Products extends Component
                 $product->presentation_id = 1;
                 $product->name = $this->product['name'];
                 $product->branch = $this->product['branch'];
-                $product->stock = 0;
+                $product->description = $this->product['description'];
                 $product->save();
             }
         }
@@ -92,6 +94,7 @@ class Products extends Component
 
         $this->product['name'] = $product->name;
         $this->product['branch'] = $product->branch;
+        $this->product['description'] = $product->description;
         $this->product['editProduct'] = true;
 
         $this->name = $product->presentation->name;
@@ -103,6 +106,7 @@ class Products extends Component
         $this->validate([
             'product.name' => 'required|max:25',
             'product.branch' => 'required',
+            'product.description' => 'required',
         ]);
 
         $presentation = Presentation::find($this->presentationId);
@@ -111,6 +115,7 @@ class Products extends Component
             $product->presentation_id = $presentation->id;
             $product->name = $this->product['name'];
             $product->branch = $this->product['branch'];
+            $product->description = $this->product['description'];
             $product->save();
         } else {
             if ($this->name) {
@@ -121,17 +126,24 @@ class Products extends Component
                 $product->presentation_id = $presentation->id;
                 $product->name = $this->product['name'];
                 $product->branch = $this->product['branch'];
+                $product->description = $this->product['description'];
                 $product->save();
             } else {
                 $product->presentation_id = 1;
                 $product->name = $this->product['name'];
                 $product->branch = $this->product['branch'];
+                $product->description = $this->product['description'];
                 $product->save();
             }
         }
 
         $this->emit('success');
         $this->resetVariables();
+    }
+
+    public function deleteProduct(Product $product)
+    {
+        $product->delete();
     }
 
     public function presentationId()
@@ -166,7 +178,7 @@ class Products extends Component
         $this->emit('success');
     }
 
-    public function showInvestories($productId)
+    public function showInventories($productId)
     {
         redirect(route('admin.showInventories', $productId));
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Order;
 use App\Models\Inventory;
 use App\Models\Presentation;
 use Illuminate\Database\Eloquent\Model;
@@ -19,5 +20,10 @@ class Product extends Model
     public function inventories()
     {
         return $this->hasMany(Inventory::class);
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)->withPivot('quantity', 'price');
     }
 }

@@ -72,7 +72,7 @@
                                         </button>
 
                                         @if ($inventory->stock == 0)
-                                            <button wire:click="deleteProduct({{ $inventory->id }})"
+                                            <button wire:click="deleteInventory({{ $inventory->id }})"
                                                 class="z-30 block p-4 transition-all bg-red-200 border-2 border-white rounded-full text-dark-700 hover:scale-110 focus:outline-none focus:ring active:bg-red-50"
                                                 type="button">
                                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -93,7 +93,6 @@
                                                 </svg>
                                             </p>
                                         @endif
-
                                     </div>
                                 </td>
                             </tr>

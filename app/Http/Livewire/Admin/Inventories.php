@@ -72,6 +72,11 @@ class Inventories extends Component
         $this->resetVariables();
     }
 
+    public function deleteInventory(Inventory $inventory)
+    {
+        $inventory->delete();
+    }
+
     public function resetVariables()
     {
         $this->reset('inventoryId', 'inventory');

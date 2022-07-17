@@ -41,6 +41,11 @@
                             </th>
                             <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
                                 <div class="flex items-center">
+                                    Descripción
+                                </div>
+                            </th>
+                            <th class="p-4 font-medium text-left text-gray-900 whitespace-nowrap">
+                                <div class="flex items-center">
                                     Acciones
                                 </div>
                             </th>
@@ -59,6 +64,9 @@
                                 </td>
                                 <td class="p-4 text-gray-700 whitespace-nowrap">
                                     {{ $product->stock }}
+                                </td>
+                                <td class="p-4 text-gray-700 whitespace-nowrap">
+                                    {{ substr($product->description , 0, 25) . '...'}}
                                 </td>
                                 <td class="px-2 w-14">
                                     <div class="flex items-center -space-x-4 hover:space-x-1">
@@ -93,11 +101,12 @@
                                                 </svg>
                                             </b>
 
-                                            <button wire:click="showInvestories({{ $product->id }})"
+                                            <button wire:click="showInventories({{ $product->id }})"
                                                 class="z-30 block p-4 transition-all bg-blue-700 border-2 border-white rounded-full text-dark-700 hover:scale-110 focus:outline-none focus:ring active:bg-blue-70"
                                                 type="button">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                    stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -157,7 +166,12 @@
                             'allow-new' => 'true',
                         ]" />
                 </div>
-
+                <div>
+                    <x-jet-label for="description" value="Descripción" />
+                    <textarea wire:model="product.description" id="description"
+                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        name="description" placeholder="Escribe una descripción" minlength="10"></textarea>
+                </div>
             </div>
         </x-slot>
 
@@ -198,6 +212,12 @@
                             'text' => 'name',
                             'allow-new' => 'true',
                         ]" />
+                </div>
+                <div>
+                    <x-jet-label for="description" value="Descripción" />
+                    <textarea wire:model="product.description" id="description"
+                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        name="description" placeholder="Escribe una descripción" minlength="10"></textarea>
                 </div>
             </div>
         </x-slot>

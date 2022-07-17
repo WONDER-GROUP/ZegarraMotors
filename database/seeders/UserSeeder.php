@@ -65,7 +65,7 @@ class UserSeeder extends Seeder
 
         //Create an admin
         User::create([
-            'username' => 'Herald',
+            'username' => 'admin',
             'email' => 'heraldcnp@gmail.com',
             'password' => bcrypt('123'),
             'email_verified_at' => now()

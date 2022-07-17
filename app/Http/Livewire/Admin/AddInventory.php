@@ -34,7 +34,7 @@ class AddInventory extends Component
             'inventory.lot' => 'required|numeric|min:0|unique:inventories,lot',
             'inventory.purchase_price' => 'required|numeric|min:1',
             'inventory.sale_price' => 'required|numeric|min:1',
-            'inventory.exp_date' => 'nullable|date',
+            'inventory.exp_date' => 'required|date',
         ]);
 
         $inventory = new Inventory();
