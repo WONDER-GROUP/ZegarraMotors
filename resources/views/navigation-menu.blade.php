@@ -30,6 +30,9 @@
                     <x-jet-nav-link href="{{ route('admin.sales') }}" :active="request()->routeIs('admin.sales')">
                         Ventas
                     </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.cars') }}" :active="request()->routeIs('admin.cars')">
+                        Coches
+                    </x-jet-nav-link>
                 </div>
             </div>
 

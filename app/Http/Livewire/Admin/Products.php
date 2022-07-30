@@ -49,7 +49,7 @@ class Products extends Component
             'product.branch' => 'required',
             'product.description' => 'required',
         ]);
-
+        
         $presentation = Presentation::find($this->presentationId);
 
         if ($presentation) {
