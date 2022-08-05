@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Car;
 use App\Models\Order;
 use App\Models\Invoice;
 use App\Models\Product;
@@ -13,8 +14,8 @@ use Illuminate\Support\Facades\DB;
 class SalesCreate extends Component
 {
     // variables for add products
-    public $customerId, $productId, $inventories, $inventoryId = "", $quantity;
-
+    public $customerId, $productId, $cars, $carId, $inventories, $inventoryId = "", $quantity;
+    
     // variables for list products added
     public $listProducts = [], $listLots = [], $listQuantity = [], $listSubtotal = [];
     public $total = 0, $discount = 0, $payment, $change, $buttonsPayment = false;
@@ -173,6 +174,15 @@ class SalesCreate extends Component
         $this->reset('quantity');
     }
 
+    public function updatedCustomerId(){
+       
+        $this->carId = "";
+        $this->cars = Customer::find($this->customerId)->cars;
+        // dd($this->cars);
+        $this->resetValidation('quantity');
+        $this->reset('quantity');
+    }
+
     public function updatedInventoryId()
     {
         $this->resetValidation('quantity');
@@ -191,6 +201,9 @@ class SalesCreate extends Component
     {
         $customers = Customer::all();
         $products = Product::all();
+       
+        // dd($cars);
+        // $this->presentation = Product::find($this->presentationId);
 
         return view('livewire.admin.sales-create', compact('customers', 'products'));
     }

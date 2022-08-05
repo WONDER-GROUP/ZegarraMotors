@@ -48,6 +48,44 @@ use App\Models\Product;
                     Registrar nuevo cliente
                 </x-jet-button>
             </div>
+            <div class="col-span-5">
+                <x-jet-label for="carId" value="Seleccionar coche" />
+                @if ($cars)
+                    <select wire:model="carId" wire:key="carId"
+                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm form-control focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value selected disabled>Seleccione un coche</option>
+                        @foreach ($cars as $car)
+                            <option value="{{ $car->id }}">
+                                {{ $car->number_plate }}
+                                {{ '(Cantidad: ' . $car->model . ')' }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-jet-input-error for="carId" />
+                @else
+                    <select disabled
+                        class="w-full mt-1 border-gray-300 rounded-md shadow-sm form-control focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <option value="" selected disabled>Seleccione un coche</option>
+                    </select>
+                    <x-jet-input-error for="carId" />
+                @endif
+            </div>
+            {{-- <div class="col-span-4">
+                <x-jet-label for="customer" value="Seleccionar producto" />
+                <div wire:ignore>
+                    <select class="w-full" id="product">
+                        <option value="0" disabled selected>Seleccionar coche</option>
+                        @foreach ($cars as $car)
+                            <option value="{{ $car->id }}">
+                                {{ $car->number_plate }}
+                                {{ '(' . $car->brand . ')' }}
+                                {{ '(' . $car->model . ')' }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <x-jet-input-error for="productId" />
+            </div> --}}
             <div class="col-span-8">
                 <div class="grid grid-cols-12 gap-4">
                     <div class="col-span-5">
@@ -247,6 +285,11 @@ use App\Models\Product;
                 $('#product').select2();
                 $('#product').on('change', function() {
                     @this.productId = this.value
+                });
+
+                $('#car').select2();
+                $('#car').on('change', function() {
+                    @this.cartId = this.value
                 });
             })
 
