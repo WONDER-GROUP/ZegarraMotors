@@ -57,7 +57,8 @@ use App\Models\Product;
                         @foreach ($cars as $car)
                             <option value="{{ $car->id }}">
                                 {{ $car->number_plate }}
-                                {{ '(Cantidad: ' . $car->model . ')' }}
+                                {{ '(Marca: ' . $car->brand . ')' }}
+                                {{ '(Modelo: ' . $car->model . ')' }}
                             </option>
                         @endforeach
                     </select>
