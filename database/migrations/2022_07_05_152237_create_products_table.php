@@ -19,9 +19,10 @@ return new class extends Migration
             $table->foreignId('presentation_id')->constrained()->onDelete('cascade');
 
             $table->string('name');
-            $table->string('branch');
+            $table->string('branch')->nullable();
             $table->integer('stock')->default(0);
             $table->string('description')->nullable();
+            $table->float('price')->nullable();
             
             $table->timestamps();
         });

@@ -157,9 +157,9 @@
             <div class="grid grid-cols-2 gap-6 mb-4">
                 <div>
                     <x-jet-label for="customer_id" value="Seleccionar cliente" />
-                    <div wire:ignore>
+                    <div>
                         <select class="block w-full " id="customer_id" wire:model="car.customer_id">
-                            <option value="0" disabled selected>Seleccionar cliente</option>
+                            <option value="" disabled selected>Seleccionar cliente</option>
                             @foreach ($customers as $customer)
                                 <option value="{{ $customer->id }}">
                                     {{ $customer->name }}

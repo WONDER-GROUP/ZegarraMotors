@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('customer_full_name');
             $table->string('user_full_name');
             $table->json('data');
-            $table->enum('type', [Invoice::ORDER, Invoice::SERVICE]);
 
             $table->timestamps();
         });

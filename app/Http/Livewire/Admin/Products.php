@@ -16,8 +16,11 @@ class Products extends Component
         'stock' => null,
         'branch' => null,
         'description' => null,
+        'price' => null,
         'addProduct' => false,
+        'addService' => false,
         'editProduct' => false,
+        'editService' => false,
     ];
 
     public $productId;
@@ -44,12 +47,19 @@ class Products extends Component
 
     public function saveProduct()
     {
-        $this->validate([
+        $rules = [
             'product.name' => 'required|max:25',
-            'product.branch' => 'required',
             'product.description' => 'required',
-        ]);
-        
+        ];
+
+        if (Product::isService($this->name)) {
+            $rules['product.price'] = 'required';
+            $this->validate($rules);
+        } else {
+            $rules['product.branch'] = 'required';
+            $this->validate($rules);
+        }
+
         $presentation = Presentation::find($this->presentationId);
 
         if ($presentation) {
@@ -59,6 +69,7 @@ class Products extends Component
             $product->name = $this->product['name'];
             $product->branch = $this->product['branch'];
             $product->description = $this->product['description'];
+            $product->price = $this->product['price'];
             $product->save();
         } else {
             if ($this->name) {
@@ -72,6 +83,7 @@ class Products extends Component
                 $product->name = $this->product['name'];
                 $product->branch = $this->product['branch'];
                 $product->description = $this->product['description'];
+                $product->price = $this->product['price'];
                 $product->save();
             } else {
                 $product = new Product();
@@ -96,6 +108,18 @@ class Products extends Component
         $this->product['branch'] = $product->branch;
         $this->product['description'] = $product->description;
         $this->product['editProduct'] = true;
+
+        $this->name = $product->presentation->name;
+        $this->presentationId = $product->presentation_id;
+    }
+
+    public function editService(Product $product)
+    {
+        $this->productId = $product->id;
+
+        $this->product['name'] = $product->name;
+        $this->product['description'] = $product->description;
+        $this->product['editService'] = true;
 
         $this->name = $product->presentation->name;
         $this->presentationId = $product->presentation_id;
@@ -141,6 +165,25 @@ class Products extends Component
         $this->resetVariables();
     }
 
+    public function updateService(Product $product)
+    {
+        $this->validate([
+            'product.name' => 'required|max:25',
+            'product.description' => 'required',
+            'product.price' => 'required',
+        ]);
+
+        $product->presentation_id = $this->presentationId;
+        $product->name = $this->product['name'];
+        $product->branch = $this->product['branch'];
+        $product->description = $this->product['description'];
+        $product->price = $this->product['price'];
+        $product->save();
+
+        $this->emit('success');
+        $this->resetVariables();
+    }
+
     public function deleteProduct(Product $product)
     {
         $product->delete();
@@ -168,7 +211,7 @@ class Products extends Component
 
     public function resetVariables()
     {
-        $this->reset('product', 'productId', 'name');
+        $this->reset('product', 'productId', 'name', );
         $this->resetValidation();
     }
 

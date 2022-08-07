@@ -40,7 +40,7 @@ $maxWidth = [
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()" x-show="show" id="{{ $id }}"
     class="fixed inset-0 z-50 px-4 py-6 overflow-y-auto jetstream-modal sm:px-0" style="display: none;">
-    <div x-show="show" class="fixed inset-0 transition-all transform" x-on:click="show = false"
+    <div x-show="show" class="fixed inset-0 transition-all transform" x-on:click="show = false, $wire.resetVariables()"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
         x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"

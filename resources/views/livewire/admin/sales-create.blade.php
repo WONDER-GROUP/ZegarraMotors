@@ -19,11 +19,17 @@ use App\Models\Product;
         <x-success-message message="Este lote ya a sido añadido" icon="error" />
     </x-notification-message>
 
+    <x-notification-message on="serviceExist">
+        <x-success-message message="Este servicio ya a sido añadido" icon="error" />
+    </x-notification-message>
+
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
             Nueva venta
         </h2>
     </x-slot>
+    {{ $quantity }}
+    <br>
 
     {{-- Begin:information about customer and products stock --}}
     <div class="py-4 mx-4 mt-4 bg-white rounded-lg shadow-lg max-w-7xl sm:px-6 lg:px-8">
@@ -108,17 +114,24 @@ use App\Models\Product;
                     <div class="col-span-5">
                         <x-jet-label for="inventoryId" value="Seleccionar lote" />
                         @if ($inventories)
-                            <select wire:model="inventoryId" wire:key="inventoryId"
-                                class="w-full mt-1 border-gray-300 rounded-md shadow-sm form-control focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value selected disabled>Seleccione un lote</option>
-                                @foreach ($inventories as $inventory)
-                                    <option value="{{ $inventory->id }}">
-                                        {{ $inventory->lot }}
-                                        {{ '(Cantidad: ' . $inventory->stock . ')' }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <x-jet-input-error for="inventoryId" />
+                            @if ($inventories->count())
+                                <select wire:model="inventoryId" wire:key="inventoryId"
+                                    class="w-full mt-1 border-gray-300 rounded-md shadow-sm form-control focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option value selected disabled>Seleccione un lote</option>
+                                    @foreach ($inventories as $inventory)
+                                        <option value="{{ $inventory->id }}">
+                                            {{ $inventory->lot }}
+                                            {{ '(Cantidad: ' . $inventory->stock . ')' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-jet-input-error for="inventoryId" />
+                            @else
+                                <select disabled
+                                    class="w-full mt-1 border-gray-300 rounded-md shadow-sm form-control focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    <option value="" selected disabled>Seleccione un lote</option>
+                                </select>
+                            @endif
                         @else
                             <select disabled
                                 class="w-full mt-1 border-gray-300 rounded-md shadow-sm form-control focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -129,12 +142,15 @@ use App\Models\Product;
                     </div>
                     <div class="col-span-2">
                         <x-jet-label for="quantity" value="Cantidad" />
-                        @if ($inventoryId)
+                        @if ($inventoryId && $inventoryId != 'service')
                             <x-jet-input wire:model="quantity" id="quantity" class="block w-full mt-1" type="number"
                                 step="1" min="0" max="10000" name="quantity" required autofocus />
-                        @else
+                        @elseif($inventoryId == '')
                             <x-jet-input class="block w-full mt-1" type="number" step="1" min="0"
                                 max="10000" name="quantity" required autofocus disabled />
+                        @elseif($inventoryId == 'service')
+                            <x-jet-input value="1" class="block w-full mt-1" type="number" step="1"
+                                min="0" max="10000" name="quantity" required autofocus disabled />
                         @endif
                         <x-jet-input-error for="quantity" />
                     </div>
@@ -198,10 +214,18 @@ use App\Models\Product;
                                 {{ ' (' . $product->presentation->name . ')' }}
                             </td>
                             <td class="p-4 text-gray-700 whitespace-nowrap">
-                                {{ $product->inventories->find($listLots[$key])->lot }}
+                                @if (Product::isService($product->presentation->name))
+                                    -
+                                @else
+                                    {{ $product->inventories->find($listLots[$key])->lot }}
+                                @endif
                             </td>
                             <td class="p-4 text-gray-700 whitespace-nowrap">
-                                {{ $product->inventories->find($listLots[$key])->sale_price }}
+                                @if (Product::isService($product->presentation->name))
+                                    {{ $product->price }}
+                                @else
+                                    {{ $product->inventories->find($listLots[$key])->sale_price }}
+                                @endif
                             </td>
                             <td class="p-4 text-gray-700 whitespace-nowrap">
                                 {{ $listQuantity[$key] }}
@@ -211,8 +235,9 @@ use App\Models\Product;
                             </td>
                             <td class="px-2 w-14">
                                 <div wire:click="deleteProduct({{ $key }})" class="grid justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500 cursor-pointer"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="w-6 h-6 text-red-500 cursor-pointer" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -237,7 +262,7 @@ use App\Models\Product;
         <div class="col-span-1">
             <x-jet-label for="discount" value="Descuento" />
             <x-jet-input wire:model="discount" id="discount" class="block w-full mt-1" type="number"
-                min="0" max="50" name="discount" required />
+                min="0" max="{{ intval($total * Product::DISCOUNT) }}" name="discount" required />
             <x-jet-input-error for="discount" />
         </div>
         <div class="col-span-1">
@@ -257,10 +282,7 @@ use App\Models\Product;
 
     {{-- Begin:buttons for payment --}}
     <div class="mx-4 mt-4">
-        <x-jet-button 
-            wire:click="saveOrder"
-            wire:loading.attr="disabled"
-            wire:target="payment"
+        <x-jet-button wire:click="saveOrder" wire:loading.attr="disabled" wire:target="payment"
             disabled="{{ $buttonsPayment ? '' : 'disabled' }}">
             Registrar venta
         </x-jet-button>

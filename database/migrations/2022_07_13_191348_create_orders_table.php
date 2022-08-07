@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
 
+            $table->float('car_id');
             $table->float('payment');
             $table->float('discount')->default(0);
             $table->float('sub_total');

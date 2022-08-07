@@ -9,9 +9,6 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    CONST ORDER = "VENTA";
-    CONST SERVICE = "SERVICIO";
-
     CONST NAME = "Zegarra Motors";
     CONST NIT = "10531005017";
     CONST ADDRESS = "Calle Perú Nº 44";

@@ -10,7 +10,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
+    CONST DISCOUNT = 0.1;
+
     use HasFactory;
+
+    public static function isService($presentationName)
+    {
+        if ($presentationName == 'Servicio' || $presentationName == 'servicio') {
+            return true;
+        }
+
+        return false;
+    }
 
     public function presentation()
     {

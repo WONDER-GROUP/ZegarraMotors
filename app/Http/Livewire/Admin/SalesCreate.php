@@ -13,12 +13,15 @@ use Illuminate\Support\Facades\DB;
 
 class SalesCreate extends Component
 {
+    // variables for customer
+    public $customerId, $productId, $cars, $carId;
+
     // variables for add products
-    public $customerId, $productId, $cars, $carId, $inventories, $inventoryId = "", $quantity;
-    
+    public $inventories, $inventoryId = "", $quantity;
+
     // variables for list products added
     public $listProducts = [], $listLots = [], $listQuantity = [], $listSubtotal = [];
-    public $total = 0, $discount = 0, $payment, $change, $buttonsPayment = false;
+    public $total = 0, $discount = 0, $payment = 0, $change, $buttonsPayment = false;
 
     protected $listeners = ['resetVariables', 'saveCustomer'];
 
@@ -38,9 +41,20 @@ class SalesCreate extends Component
         if (in_array($this->inventoryId, $this->listLots)) {
             $this->emit('inventoryExist');
         } else {
-            array_push($this->listProducts, $this->productId);
-            array_push($this->listLots, $this->inventoryId);
-            array_push($this->listQuantity, $this->quantity);
+            $product = Product::find($this->productId);
+
+            if (Product::isService($product->presentation->name)) {
+                if (in_array($this->productId, $this->listProducts)) {
+                    return $this->emit('serviceExist');
+                }
+                array_push($this->listProducts, $this->productId);
+                array_push($this->listLots, 'service' . $product->id);
+                array_push($this->listQuantity, 1);
+            } else {
+                array_push($this->listProducts, $this->productId);
+                array_push($this->listLots, $this->inventoryId);
+                array_push($this->listQuantity, $this->quantity);
+            }
 
             $this->computeTotal();
 
@@ -56,9 +70,14 @@ class SalesCreate extends Component
 
         foreach ($this->listProducts as $key => $id) {
             $product = Product::find($id);
-            $lot = $product->inventories->find($this->listLots[$key]);
-            array_push($this->listSubtotal, round($lot->sale_price * $this->listQuantity[$key], 2));
-            $this->total += $this->listSubtotal[$key];
+            if ($this->listLots[$key] == 'service' . $product->id) {
+                array_push($this->listSubtotal, round($product->price * $this->listQuantity[$key], 2));
+                $this->total += $this->listSubtotal[$key];
+            } else {
+                $lot = $product->inventories->find($this->listLots[$key]);
+                array_push($this->listSubtotal, round($lot->sale_price * $this->listQuantity[$key], 2));
+                $this->total += $this->listSubtotal[$key];
+            }
         }
     }
 
@@ -73,13 +92,18 @@ class SalesCreate extends Component
         unset($this->listLots[$key]);
         $this->listLots = array_values($this->listLots);
 
+        unset($this->listQuantity[$key]);
+        $this->listQuantity = array_values($this->listQuantity);
+
         $this->computeTotal();
     }
 
     public function updatedPayment()
     {
+        $this->buttonsPayment = false;
+
         $this->validate([
-            'payment' => 'required|numeric|integer|min:1',
+            'payment' => 'required|numeric|integer|min:' . $this->total - $this->discount,
         ]);
 
         // verify a correct amount of payment
@@ -91,12 +115,26 @@ class SalesCreate extends Component
         }
     }
 
+    public function updatedDiscount()
+    {
+        $this->validate([
+            'discount' => 'required|numeric|integer|min:0',
+        ]);
+
+        if ($this->discount <= ($this->total * Product::DISCOUNT)) {
+            $this->updatedPayment();
+        } else {
+            $this->buttonsPayment = false;
+        }
+    }
+
     public function saveOrder()
     {
         $this->validate([
             'customerId' => 'required',
             'discount' => 'required|numeric|integer|min:0',
             'payment' => 'required|numeric|integer|min:1',
+            'carId' => 'required'
         ]);
 
         // Extract data for save on invoices
@@ -105,41 +143,50 @@ class SalesCreate extends Component
         $order = new Order;
         $order->user_id = auth()->user()->id;
         $order->customer_id = $this->customerId;
+        $order->car_id = $this->carId;
         $order->payment = $this->payment;
         $order->discount = $this->discount;
         $order->sub_total = $this->total;
         $order->total = $this->total - $this->discount;
-        $order->change = round($this->payment - ($this->total - $this->discount ), 2);
+        $order->change = round($this->payment - ($this->total - $this->discount), 2);
         $order->ciSearch = $customer->nit;
         $order->save();
 
         // Updating data of stock
         foreach ($this->listProducts as $key => $id) {
             $product = Product::find($id);
-            $lot = $product->inventories->find($this->listLots[$key]);
+            if (Product::isService($product->presentation->name)) {
+                // Insert data of order on table pivot
+                DB::table('order_product')->insert([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $this->listQuantity[$key],
+                    'price' => $product->price,
+                ]);
+            } else {
+                $lot = $product->inventories->find($this->listLots[$key]);
 
-            // Insert data of order on table pivot
-            DB::table('order_product')->insert([
-                'order_id' => $order->id,
-                'product_id' => $product->id,
-                'quantity' => $this->listQuantity[$key],
-                'price' => $lot->sale_price,
-            ]);
+                // Insert data of order on table pivot
+                DB::table('order_product')->insert([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $this->listQuantity[$key],
+                    'price' => $lot->sale_price,
+                ]);
 
-            // computing the new stock
-            $lot->stock -= $this->listQuantity[$key];
-            $lot->save();
+                // computing the new stock
+                $lot->stock -= $this->listQuantity[$key];
+                $lot->save();
 
-            $stock = 0;
-            foreach ($product->inventories as $key => $lot) {
-                $stock += $lot->stock;
+                $stock = 0;
+                foreach ($product->inventories as $key => $lot) {
+                    $stock += $lot->stock;
+                }
+
+                $product->stock = $stock;
+                $product->save();
             }
-
-            $product->stock = $stock;
-            $product->save();
         }
-
-
 
         // Save invoice type ORDER
         $invoice = new Invoice();
@@ -147,7 +194,6 @@ class SalesCreate extends Component
         $invoice->customer_full_name = $customer->name . ' ' . $customer->f_last_name . ' ' . $customer->m_last_name;
         $invoice->user_full_name = auth()->user()->people->name . ' ' . auth()->user()->people->f_last_name . ' ' . auth()->user()->people->m_last_name;
         $invoice->data = json_encode($order);
-        $invoice->type = Invoice::ORDER;
         $invoice->save();
 
         return redirect(route('admin.sales'));
@@ -168,19 +214,24 @@ class SalesCreate extends Component
     public function updatedProductId()
     {
         $this->inventoryId = "";
-        $this->inventories = Product::find($this->productId)->inventories;
 
-        $this->resetValidation('quantity');
-        $this->reset('quantity');
+        $this->inventories = Product::find($this->productId)->inventories;
+        $product = Product::find($this->productId);
+
+        if (Product::isService($product->presentation->name)) {
+            $this->inventoryId = "service";
+            $this->quantity = 1;
+        } else {
+            $this->resetValidation('quantity');
+            $this->reset('quantity');
+        }
     }
 
-    public function updatedCustomerId(){
-       
+    public function updatedCustomerId()
+    {
+
         $this->carId = "";
         $this->cars = Customer::find($this->customerId)->cars;
-        // dd($this->cars);
-        $this->resetValidation('quantity');
-        $this->reset('quantity');
     }
 
     public function updatedInventoryId()
@@ -201,9 +252,6 @@ class SalesCreate extends Component
     {
         $customers = Customer::all();
         $products = Product::all();
-       
-        // dd($cars);
-        // $this->presentation = Product::find($this->presentationId);
 
         return view('livewire.admin.sales-create', compact('customers', 'products'));
     }

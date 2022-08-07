@@ -12,7 +12,7 @@ class Cars extends Component
     use WithPagination;
 
     public $car = [
-        'customer_id' => 0, 
+        'customer_id' => "", 
         'brand' => null,
         'model' => null,
         'color' => null,
